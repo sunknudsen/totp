@@ -70,14 +70,11 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
   hmac.update(message)
   hmac.end()
   const data = hmac.read()
-  return parseInt(
-    (
-      parseInt(data.substr(parseInt(data.slice(-1), 16) * 2, 8), 16) &
-      2147483647
-    )
-      .toString()
-      .slice(-6)
+  return (
+    parseInt(data.substr(parseInt(data.slice(-1), 16) * 2, 8), 16) & 2147483647
   )
+    .toString()
+    .slice(-6)
 }
 
 /**
@@ -89,7 +86,7 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
  */
 export const validateToken = (
   secret: string,
-  token: number,
+  token: string,
   timestamp = Date.now()
 ) => {
   if (token === generateToken(secret, timestamp)) {

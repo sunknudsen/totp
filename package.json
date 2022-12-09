@@ -1,6 +1,6 @@
 {
   "name": "@sunknudsen/totp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate and validate TOTP tokens.",
   "main": "dist/index.js",
   "files": [

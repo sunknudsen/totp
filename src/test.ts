@@ -12,7 +12,7 @@ const referenceIssuer = referenceLabel
 const referenceUri =
   "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30"
 const referenceTimestamp = 1670589924041
-const referenceToken = 771101
+const referenceToken = "771101"
 
 test("generate secret", async () => {
   const secret = generateSecret()
@@ -36,7 +36,7 @@ test("generate URI", async () => {
 
 test("generate token", async () => {
   const token = generateToken(referenceSecret)
-  expect(token.toString()).toMatch(/[0-9]{6}/)
+  expect(token).toMatch(/[0-9]{6}/)
 })
 
 test("generate token using reference timestamp", async () => {
@@ -45,7 +45,7 @@ test("generate token using reference timestamp", async () => {
 })
 
 test("validate invalid token", async () => {
-  const result = validateToken(referenceSecret, 103945, referenceTimestamp)
+  const result = validateToken(referenceSecret, "103945", referenceTimestamp)
   expect(result).toEqual(false)
 })
 
