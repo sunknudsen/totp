@@ -64,7 +64,7 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
     )}`.slice(-16),
     "hex"
   )
-  const key = Buffer.from(base32ToHex(secret), "hex")
+  const key = Buffer.from(base32ToHex(secret.toUpperCase()), "hex")
   const hmac = createHmac("sha1", key)
   hmac.setEncoding("hex")
   hmac.update(message)

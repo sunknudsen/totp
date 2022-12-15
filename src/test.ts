@@ -57,3 +57,12 @@ test("validate valid token", async () => {
   )
   expect(result).toEqual(true)
 })
+
+test("validate valid token using lower case secret", async () => {
+  const result = validateToken(
+    "dmjkp7au22wkwrg3dniq3era",
+    referenceToken,
+    referenceTimestamp
+  )
+  expect(result).toEqual(true)
+})
