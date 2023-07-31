@@ -36,9 +36,9 @@ console.log(uri)
 const token = generateToken("DMJKP7AU22WKWRG3DNIQ3ERA")
 
 console.log(token)
-// 771101
+// 616692
 
-const result = validateToken("DMJKP7AU22WKWRG3DNIQ3ERA", "771101")
+const result = validateToken("DMJKP7AU22WKWRG3DNIQ3ERA", "616692")
 
 console.log(result)
 // true

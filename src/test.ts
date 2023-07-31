@@ -11,8 +11,8 @@ const referenceSecret = "DMJKP7AU22WKWRG3DNIQ3ERA"
 const referenceIssuer = referenceLabel
 const referenceUri =
   "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30"
-const referenceTimestamp = 1670589924041
-const referenceToken = "771101"
+const referenceTimestamps = [1664596800000, 1664596770000]
+const referenceTokens = ["616692", "415925"]
 
 test("generate secret", async () => {
   const secret = generateSecret()
@@ -40,29 +40,61 @@ test("generate token", async () => {
 })
 
 test("generate token using reference timestamp", async () => {
-  const token = generateToken(referenceSecret, referenceTimestamp)
-  expect(token).toEqual(referenceToken)
+  const token = generateToken(referenceSecret, referenceTimestamps[0])
+  expect(token).toEqual(referenceTokens[0])
 })
 
 test("validate invalid token", async () => {
-  const result = validateToken(referenceSecret, "103945", referenceTimestamp)
+  const result = validateToken(referenceSecret, "103945")
   expect(result).toEqual(false)
 })
 
 test("validate valid token", async () => {
   const result = validateToken(
     referenceSecret,
-    referenceToken,
-    referenceTimestamp
+    referenceTokens[0],
+    1,
+    referenceTimestamps[0]
   )
   expect(result).toEqual(true)
 })
 
 test("validate valid token using lower case secret", async () => {
   const result = validateToken(
-    "dmjkp7au22wkwrg3dniq3era",
-    referenceToken,
-    referenceTimestamp
+    referenceSecret.toLowerCase(),
+    referenceTokens[0],
+    1,
+    referenceTimestamps[0]
+  )
+  expect(result).toEqual(true)
+})
+
+test("validate valid but expired past token", async () => {
+  const result = validateToken(
+    referenceSecret,
+    referenceTokens[1],
+    1,
+    referenceTimestamps[0]
+  )
+  expect(result).toEqual(false)
+})
+
+test("validate valid past token", async () => {
+  const result = validateToken(
+    referenceSecret,
+    referenceTokens[1],
+    1,
+    referenceTimestamps[1]
+  )
+  expect(result).toEqual(true)
+})
+
+test("validate valid past token using threshold 2", async () => {
+  const result = validateToken(
+    referenceSecret,
+    referenceTokens[1],
+    2,
+    referenceTimestamps[0]
   )
   expect(result).toEqual(true)
 })

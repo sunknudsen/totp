@@ -81,16 +81,20 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
  * Validate token
  * @param secret secret
  * @param token token
+ * @param threshold optional, number of valid periods (defaults to `1`)
  * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
  * @returns boolean
  */
 export const validateToken = (
   secret: string,
   token: string,
+  threshold: number = 1,
   timestamp = Date.now()
 ) => {
-  if (token === generateToken(secret, timestamp)) {
-    return true
+  for (let index = 0; index < threshold; index++) {
+    if (token === generateToken(secret, timestamp - index * 30 * 1000)) {
+      return true
+    }
   }
   return false
 }
