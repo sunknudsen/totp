@@ -48,7 +48,7 @@ export const generateUri = (
     username
   )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
     issuer
-  )}&algorithm=SHA1&digits=6&period=30`
+  )}&algorithm=SHA256&digits=6&period=30`
 }
 
 /**
@@ -65,7 +65,7 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
     "hex"
   )
   const key = Buffer.from(base32ToHex(secret.toUpperCase()), "hex")
-  const hmac = createHmac("sha1", key)
+  const hmac = createHmac("sha256", key)
   hmac.setEncoding("hex")
   hmac.update(message)
   hmac.end()

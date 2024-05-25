@@ -31,7 +31,7 @@ const uri = generateUri(
 )
 
 console.log(uri)
-// otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30
+// otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA256&digits=6&period=30
 
 const token = generateToken("DMJKP7AU22WKWRG3DNIQ3ERA")
 

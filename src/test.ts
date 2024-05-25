@@ -10,9 +10,9 @@ const referenceUsername = "john@protonmail.com"
 const referenceSecret = "DMJKP7AU22WKWRG3DNIQ3ERA"
 const referenceIssuer = referenceLabel
 const referenceUri =
-  "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30"
+  "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA256&digits=6&period=30"
 const referenceTimestamps = [1664596800000, 1664596770000]
-const referenceTokens = ["616692", "415925"]
+const referenceTokens = ["067612", "654664"]
 
 test("generate secret", async () => {
   const secret = generateSecret()
