@@ -2,6 +2,10 @@
 
 ## Generate and validate TOTP tokens.
 
+[@sunknudsen/totp](https://www.npmjs.com/package/@sunknudsen/totp) has zero dependencies and 100% unit test code coverage.
+
+Package is used in production by [Superbacked](https://superbacked.com/) and many others.
+
 ## Installation
 
 ```console
