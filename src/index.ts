@@ -2,6 +2,8 @@ import { randomBytes, createHmac } from "crypto"
 
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
+export type hashAlgorithm = "SHA1" | "SHA256";
+
 const base32ToHex = (base32: string) => {
   let bits = ""
   let hex = ""
@@ -41,14 +43,15 @@ export const generateUri = (
   label: string,
   username: string,
   secret: string,
-  issuer: string
+  issuer: string,
+  algorithm: hashAlgorithm = "SHA1"
 ) => {
   // See https://github.com/google/google-authenticator/wiki/Key-Uri-Format
   return `otpauth://totp/${encodeURIComponent(label)}:${encodeURIComponent(
     username
   )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
     issuer
-  )}&algorithm=SHA1&digits=6&period=30`
+  )}&algorithm=${algorithm}&digits=6&period=30`
 }
 
 /**
@@ -57,7 +60,11 @@ export const generateUri = (
  * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
  * @returns token
  */
-export const generateToken = (secret: string, timestamp = Date.now()) => {
+export const generateToken = (
+  secret: string,
+  timestamp = Date.now(),
+  algorithm: hashAlgorithm = 'SHA1'
+) => {
   const message = Buffer.from(
     `0000000000000000${Math.floor(Math.round(timestamp / 1000) / 30).toString(
       16
@@ -65,7 +72,7 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
     "hex"
   )
   const key = Buffer.from(base32ToHex(secret.toUpperCase()), "hex")
-  const hmac = createHmac("sha1", key)
+  const hmac = createHmac(algorithm, key)
   hmac.setEncoding("hex")
   hmac.update(message)
   hmac.end()
@@ -89,10 +96,11 @@ export const validateToken = (
   secret: string,
   token: string,
   threshold: number = 1,
-  timestamp = Date.now()
+  timestamp = Date.now(),
+  algorithm: hashAlgorithm = 'SHA1'
 ) => {
   for (let index = 0; index < threshold; index++) {
-    if (token === generateToken(secret, timestamp - index * 30 * 1000)) {
+    if (token === generateToken(secret, timestamp - index * 30 * 1000, algorithm)) {
       return true
     }
   }
