@@ -54,17 +54,17 @@ test("generate token", async () => {
 })
 
 test("generate token using SHA256", async () => {
-  const token = generateToken(referenceSecret, undefined, 'SHA256')
+  const token = generateToken(referenceSecret, 'SHA256', undefined)
   expect(token).toMatch(/[0-9]{6}/)
 })
 
 test("generate token using reference timestamp", async () => {
-  const token = generateToken(referenceSecret, referenceTimestamps[0])
+  const token = generateToken(referenceSecret, undefined, referenceTimestamps[0])
   expect(token).toEqual(referenceTokens[0])
 })
 
 test("generate token using reference timestamp and SHA256", async () => {
-  const token = generateToken(referenceSecret, referenceTimestamps[0], 'SHA256')
+  const token = generateToken(referenceSecret, 'SHA256', referenceTimestamps[0])
   expect(token).toEqual(referenceTokens256[0])
 })
 
@@ -78,6 +78,7 @@ test("validate valid token", async () => {
     referenceSecret,
     referenceTokens[0],
     1,
+    undefined,
     referenceTimestamps[0]
   )
   expect(result).toEqual(true)
@@ -88,8 +89,8 @@ test("validate valid token using SHA256", async () => {
     referenceSecret,
     referenceTokens256[0],
     1,
-    referenceTimestamps[0],
-    'SHA256'
+    'SHA256',
+    referenceTimestamps[0]
   )
   expect(result).toEqual(true)
 })
@@ -99,6 +100,7 @@ test("validate valid token using lower case secret", async () => {
     referenceSecret.toLowerCase(),
     referenceTokens[0],
     1,
+    undefined,
     referenceTimestamps[0]
   )
   expect(result).toEqual(true)
@@ -109,6 +111,7 @@ test("validate valid but expired past token", async () => {
     referenceSecret,
     referenceTokens[1],
     1,
+    undefined,
     referenceTimestamps[0]
   )
   expect(result).toEqual(false)
@@ -119,6 +122,7 @@ test("validate valid past token", async () => {
     referenceSecret,
     referenceTokens[1],
     1,
+    undefined,
     referenceTimestamps[1]
   )
   expect(result).toEqual(true)
@@ -129,8 +133,8 @@ test("validate valid past token using SHA256", async () => {
     referenceSecret,
     referenceTokens256[1],
     1,
-    referenceTimestamps[1],
-    'SHA256'
+    'SHA256',
+    referenceTimestamps[1]
   )
   expect(result).toEqual(true)
 })
@@ -140,6 +144,7 @@ test("validate valid past token using threshold 2", async () => {
     referenceSecret,
     referenceTokens[1],
     2,
+    undefined,
     referenceTimestamps[0]
   )
   expect(result).toEqual(true)
@@ -150,8 +155,8 @@ test("validate valid past token using threshold 2 and SHA256", async () => {
     referenceSecret,
     referenceTokens256[1],
     2,
-    referenceTimestamps[0],
-    'SHA256'
+    'SHA256',
+    referenceTimestamps[0]
   )
   expect(result).toEqual(true)
 })
