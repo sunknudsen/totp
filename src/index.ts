@@ -1,8 +1,6 @@
-import { randomBytes, createHmac } from "crypto"
+import { createHmac, randomBytes } from "crypto"
 
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-
-export type HashAlgorithm = "SHA1" | "SHA256" | "SHA512";
 
 const base32ToHex = (base32: string) => {
   let bits = ""
@@ -31,14 +29,15 @@ export const generateSecret = (length: number = 24) => {
     .toString()
 }
 
+export type HashAlgorithm = "SHA1" | "SHA256" | "SHA512"
+
 /**
  * Generate URI
  * @param label label
  * @param username username
  * @param secret secret
  * @param issuer issuer
-* @param algorithm optional, the SHA algorithm used for token generation (defaults to "SHA1")
-* ```
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
  * @returns URI
  */
 export const generateUri = (
@@ -59,9 +58,8 @@ export const generateUri = (
 /**
  * Generate token
  * @param secret secret
-* @param algorithm optional, the SHA algorithm used for token generation (defaults to "SHA1")
-* ```
- * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
+ * @param timestamp optional, timestamp used by deterministic unit tests (defaults to current timestamp)
  * @returns token
  */
 export const generateToken = (
@@ -93,9 +91,8 @@ export const generateToken = (
  * @param secret secret
  * @param token token
  * @param threshold optional, number of valid periods (defaults to `1`)
-* @param algorithm optional, the SHA algorithm used for token generation (defaults to "SHA1")
-* ```
- * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
+ * @param timestamp optional, timestamp used by deterministic unit tests (defaults to current timestamp)
  * @returns boolean
  */
 export const validateToken = (
@@ -106,7 +103,9 @@ export const validateToken = (
   timestamp: number = Date.now()
 ) => {
   for (let index = 0; index < threshold; index++) {
-    if (token === generateToken(secret, algorithm, timestamp - index * 30 * 1000)) {
+    if (
+      token === generateToken(secret, algorithm, timestamp - index * 30 * 1000)
+    ) {
       return true
     }
   }
