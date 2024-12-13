@@ -37,7 +37,8 @@ export const generateSecret = (length: number = 24) => {
  * @param username username
  * @param secret secret
  * @param issuer issuer
- * @param algorythm optional, the SHA algorythm embedded in the URI (defaults to "SHA1")
+* @param algorithm optional, the SHA algorithm used for token generation (defaults to "SHA1")
+* ```
  * @returns URI
  */
 export const generateUri = (
