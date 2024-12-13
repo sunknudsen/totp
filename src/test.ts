@@ -3,7 +3,7 @@ import {
   generateUri,
   generateToken,
   validateToken,
-  hashAlgorithm,
+  HashAlgorithm,
 } from "./index"
 
 const referenceLabel = "Superbacked"
@@ -21,7 +21,7 @@ const referenceTokens = {
   SHA256: ["067612", "654664"],
   SHA512: ["431432", "415901"],
 }
-const referenceDimensions: (undefined | hashAlgorithm)[] = [undefined, "SHA1", "SHA256", "SHA512"];
+const referenceDimensions: (undefined | HashAlgorithm)[] = [undefined, "SHA1", "SHA256", "SHA512"];
 
 test("generate secret", async () => {
   const secret = generateSecret()

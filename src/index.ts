@@ -2,7 +2,7 @@ import { randomBytes, createHmac } from "crypto"
 
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
-export type hashAlgorithm = "SHA1" | "SHA256" | "SHA512";
+export type HashAlgorithm = "SHA1" | "SHA256" | "SHA512";
 
 const base32ToHex = (base32: string) => {
   let bits = ""
@@ -45,7 +45,7 @@ export const generateUri = (
   username: string,
   secret: string,
   issuer: string,
-  algorithm: hashAlgorithm = "SHA1"
+  algorithm: HashAlgorithm = "SHA1"
 ) => {
   // See https://github.com/google/google-authenticator/wiki/Key-Uri-Format
   return `otpauth://totp/${encodeURIComponent(label)}:${encodeURIComponent(
@@ -64,7 +64,7 @@ export const generateUri = (
  */
 export const generateToken = (
   secret: string,
-  algorithm: hashAlgorithm = "SHA1",
+  algorithm: HashAlgorithm = "SHA1",
   timestamp: number = Date.now()
 ) => {
   const message = Buffer.from(
@@ -99,7 +99,7 @@ export const validateToken = (
   secret: string,
   token: string,
   threshold: number = 1,
-  algorithm: hashAlgorithm = "SHA1",
+  algorithm: HashAlgorithm = "SHA1",
   timestamp: number = Date.now()
 ) => {
   for (let index = 0; index < threshold; index++) {
