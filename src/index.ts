@@ -91,7 +91,7 @@ export const generateToken = (
  * @param secret secret
  * @param token token
  * @param threshold optional, number of valid periods (defaults to `1`)
- * @param algorythm optional, the SHA algorythm used for token generation (defaults to "SHA1")
+* @param algorithm optional, the SHA algorythm used for token generation (defaults to "SHA1")
  * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
  * @returns boolean
  */
