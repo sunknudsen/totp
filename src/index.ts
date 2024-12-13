@@ -58,7 +58,8 @@ export const generateUri = (
 /**
  * Generate token
  * @param secret secret
- * @param algorythm optional, the SHA algorythm used for token generation (defaults to "SHA1")
+* @param algorithm optional, the SHA algorithm used for token generation (defaults to "SHA1")
+* ```
  * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
  * @returns token
  */
