@@ -1,4 +1,4 @@
-import { randomBytes, createHmac } from "crypto"
+import { createHmac, randomBytes } from "crypto"
 
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
@@ -21,7 +21,7 @@ const base32ToHex = (base32: string) => {
  * @param length optional, length (defaults to `24`)
  * @returns secret
  */
-export const generateSecret = (length = 24) => {
+export const generateSecret = (length: number = 24) => {
   return randomBytes(length)
     .map((value) =>
       charset.charCodeAt(Math.floor((value * charset.length) / 256))
@@ -29,35 +29,44 @@ export const generateSecret = (length = 24) => {
     .toString()
 }
 
+export type HashAlgorithm = "SHA1" | "SHA256" | "SHA512"
+
 /**
  * Generate URI
  * @param label label
  * @param username username
  * @param secret secret
  * @param issuer issuer
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
  * @returns URI
  */
 export const generateUri = (
   label: string,
   username: string,
   secret: string,
-  issuer: string
+  issuer: string,
+  algorithm: HashAlgorithm = "SHA1"
 ) => {
   // See https://github.com/google/google-authenticator/wiki/Key-Uri-Format
   return `otpauth://totp/${encodeURIComponent(label)}:${encodeURIComponent(
     username
   )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
     issuer
-  )}&algorithm=SHA1&digits=6&period=30`
+  )}&algorithm=${algorithm}&digits=6&period=30`
 }
 
 /**
  * Generate token
  * @param secret secret
- * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
+ * @param timestamp optional, timestamp used by deterministic unit tests (defaults to current timestamp)
  * @returns token
  */
-export const generateToken = (secret: string, timestamp = Date.now()) => {
+export const generateToken = (
+  secret: string,
+  algorithm: HashAlgorithm = "SHA1",
+  timestamp: number = Date.now()
+) => {
   const message = Buffer.from(
     `0000000000000000${Math.floor(Math.round(timestamp / 1000) / 30).toString(
       16
@@ -65,7 +74,7 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
     "hex"
   )
   const key = Buffer.from(base32ToHex(secret.toUpperCase()), "hex")
-  const hmac = createHmac("sha1", key)
+  const hmac = createHmac(algorithm, key)
   hmac.setEncoding("hex")
   hmac.update(message)
   hmac.end()
@@ -82,17 +91,21 @@ export const generateToken = (secret: string, timestamp = Date.now()) => {
  * @param secret secret
  * @param token token
  * @param threshold optional, number of valid periods (defaults to `1`)
- * @param timestamp optional, timestamp used for deterministic unit tests (defaults to current timestamp)
+ * @param algorithm optional, algorithm used by token generation (defaults to `SHA1`)
+ * @param timestamp optional, timestamp used by deterministic unit tests (defaults to current timestamp)
  * @returns boolean
  */
 export const validateToken = (
   secret: string,
   token: string,
   threshold: number = 1,
-  timestamp = Date.now()
+  algorithm: HashAlgorithm = "SHA1",
+  timestamp: number = Date.now()
 ) => {
   for (let index = 0; index < threshold; index++) {
-    if (token === generateToken(secret, timestamp - index * 30 * 1000)) {
+    if (
+      token === generateToken(secret, algorithm, timestamp - index * 30 * 1000)
+    ) {
       return true
     }
   }

@@ -1,7 +1,8 @@
 import {
+  HashAlgorithm,
   generateSecret,
-  generateUri,
   generateToken,
+  generateUri,
   validateToken,
 } from "./index"
 
@@ -9,10 +10,26 @@ const referenceLabel = "Superbacked"
 const referenceUsername = "john@protonmail.com"
 const referenceSecret = "DMJKP7AU22WKWRG3DNIQ3ERA"
 const referenceIssuer = referenceLabel
-const referenceUri =
-  "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30"
+type ReferenceUri = {
+  [hashAlgorithm in HashAlgorithm]: string
+}
+const referenceUri: ReferenceUri = {
+  SHA1: "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30",
+  SHA256:
+    "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA256&digits=6&period=30",
+  SHA512:
+    "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA512&digits=6&period=30",
+}
 const referenceTimestamps = [1664596800000, 1664596770000]
-const referenceTokens = ["616692", "415925"]
+type ReferenceTokens = {
+  [hashAlgorithm in HashAlgorithm]: string[]
+}
+const referenceTokens: ReferenceTokens = {
+  SHA1: ["616692", "415925"],
+  SHA256: ["067612", "654664"],
+  SHA512: ["431432", "415901"],
+}
+const referenceAlgorithms: HashAlgorithm[] = ["SHA1", "SHA256", "SHA512"]
 
 test("generate secret", async () => {
   const secret = generateSecret()
@@ -25,23 +42,34 @@ test("generate secret using user-defined length", async () => {
 })
 
 test("generate URI", async () => {
-  const uri = generateUri(
-    referenceLabel,
-    referenceUsername,
-    referenceSecret,
-    referenceIssuer
-  )
-  expect(uri).toEqual(referenceUri)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const uri = generateUri(
+      referenceLabel,
+      referenceUsername,
+      referenceSecret,
+      referenceIssuer,
+      referenceAlgorithm
+    )
+    expect(uri).toEqual(referenceUri[referenceAlgorithm])
+  }
 })
 
 test("generate token", async () => {
-  const token = generateToken(referenceSecret)
-  expect(token).toMatch(/[0-9]{6}/)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const token = generateToken(referenceSecret, referenceAlgorithm)
+    expect(token).toMatch(/[0-9]{6}/)
+  }
 })
 
 test("generate token using reference timestamp", async () => {
-  const token = generateToken(referenceSecret, referenceTimestamps[0])
-  expect(token).toEqual(referenceTokens[0])
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const token = generateToken(
+      referenceSecret,
+      referenceAlgorithm,
+      referenceTimestamps[0]
+    )
+    expect(token).toEqual(referenceTokens[referenceAlgorithm][0])
+  }
 })
 
 test("validate invalid token", async () => {
@@ -50,51 +78,66 @@ test("validate invalid token", async () => {
 })
 
 test("validate valid token", async () => {
-  const result = validateToken(
-    referenceSecret,
-    referenceTokens[0],
-    1,
-    referenceTimestamps[0]
-  )
-  expect(result).toEqual(true)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const result = validateToken(
+      referenceSecret,
+      referenceTokens[referenceAlgorithm][0],
+      1,
+      referenceAlgorithm,
+      referenceTimestamps[0]
+    )
+    expect(result).toEqual(true)
+  }
 })
 
 test("validate valid token using lower case secret", async () => {
-  const result = validateToken(
-    referenceSecret.toLowerCase(),
-    referenceTokens[0],
-    1,
-    referenceTimestamps[0]
-  )
-  expect(result).toEqual(true)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const result = validateToken(
+      referenceSecret.toLowerCase(),
+      referenceTokens[referenceAlgorithm][0],
+      1,
+      referenceAlgorithm,
+      referenceTimestamps[0]
+    )
+    expect(result).toEqual(true)
+  }
 })
 
 test("validate valid but expired past token", async () => {
-  const result = validateToken(
-    referenceSecret,
-    referenceTokens[1],
-    1,
-    referenceTimestamps[0]
-  )
-  expect(result).toEqual(false)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const result = validateToken(
+      referenceSecret,
+      referenceTokens[referenceAlgorithm][1],
+      1,
+      referenceAlgorithm,
+      referenceTimestamps[0]
+    )
+    expect(result).toEqual(false)
+  }
 })
 
 test("validate valid past token", async () => {
-  const result = validateToken(
-    referenceSecret,
-    referenceTokens[1],
-    1,
-    referenceTimestamps[1]
-  )
-  expect(result).toEqual(true)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const result = validateToken(
+      referenceSecret,
+      referenceTokens[referenceAlgorithm][1],
+      1,
+      referenceAlgorithm,
+      referenceTimestamps[1]
+    )
+    expect(result).toEqual(true)
+  }
 })
 
 test("validate valid past token using threshold 2", async () => {
-  const result = validateToken(
-    referenceSecret,
-    referenceTokens[1],
-    2,
-    referenceTimestamps[0]
-  )
-  expect(result).toEqual(true)
+  for (const referenceAlgorithm of referenceAlgorithms) {
+    const result = validateToken(
+      referenceSecret,
+      referenceTokens[referenceAlgorithm][1],
+      2,
+      referenceAlgorithm,
+      referenceTimestamps[0]
+    )
+    expect(result).toEqual(true)
+  }
 })
