@@ -14,7 +14,8 @@ type ReferenceUri = {
   [hashAlgorithm in HashAlgorithm]: string
 }
 const referenceUri: ReferenceUri = {
-  SHA1: "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30",
+  SHA1: 
+    "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA1&digits=6&period=30",
   SHA256:
     "otpauth://totp/Superbacked:john%40protonmail.com?secret=DMJKP7AU22WKWRG3DNIQ3ERA&issuer=Superbacked&algorithm=SHA256&digits=6&period=30",
   SHA512:
